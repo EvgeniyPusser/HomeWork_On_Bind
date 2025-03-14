@@ -1,6 +1,5 @@
 class Deferred {
   constructor() {
-    this.promise = Promise.resolve();
     this.chain = [];
   }
 
@@ -32,18 +31,10 @@ d.then(function (res) {
 });
 d.resolve("hello");
 
-
 Function.prototype.myBind = function (context, ...args) {
- 
   const originalFunction = this;
 
- 
   return function (...newArgs) {
-    
-    if (this instanceof originalFunction) {
-      return new originalFunction(...args, ...newArgs);
-    }
-    
     return originalFunction.apply(context, [...args, ...newArgs]);
   };
 };
