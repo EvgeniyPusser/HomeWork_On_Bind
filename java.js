@@ -10,9 +10,14 @@ class Deferred {
 
   resolve(value) {
     let currentValue = value;
-    for (const callback of this.chain) {
-      currentValue = callback(currentValue);
-    }
+    // Using `forEach` to iterate over the chain of callbacks
+    this._processChain(currentValue);
+  }
+
+  _processChain(value) {
+    this.chain.forEach((callback) => {
+      value = callback(value); // pass the value through each callback
+    });
   }
 }
 
@@ -32,22 +37,19 @@ d.then(function (res) {
 d.resolve("hello");
 
 Function.prototype.myBind = function (context, ...args) {
-  const originalFunction = this;
-
-  return function (...newArgs) {
-    return originalFunction.apply(context, [...args, ...newArgs]);
-  };
+  return (...newArgs) => this.apply(context, [...args, ...newArgs]);
 };
 
-
 const person = {
-  name: 'Alice',
+  name: "Alice",
 };
 
 function greet(age, country) {
-  console.log(`Hello, my name is ${this.name}. I'm ${age} years old and live in ${country}.`);
+  console.log(
+    `Hello, my name is ${this.name}. I'm ${age} years old and live in ${country}.`
+  );
 }
 
 const greetAlice = greet.myBind(person, 25);
 
-greetAlice('USA');  
+greetAlice("USA");
