@@ -1,23 +1,21 @@
 class Deferred {
   constructor() {
     this.chain = [];
+    this.value = undefined;
   }
 
   then(callback) {
     this.chain.push(callback);
-    return this;
+    return this; // Allow chaining
   }
 
   resolve(value) {
-    let currentValue = value;
-    // Using `forEach` to iterate over the chain of callbacks
-    this._processChain(currentValue);
+    this.value = value; // Store initial value
+    this.chain.forEach(this.executeCallback, this);
   }
 
-  _processChain(value) {
-    this.chain.forEach((callback) => {
-      value = callback(value); // pass the value through each callback
-    });
+  executeCallback(callback) {
+    this.value = callback(this.value); // Update value with each callback result
   }
 }
 
