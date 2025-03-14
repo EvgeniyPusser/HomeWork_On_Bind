@@ -1,7 +1,27 @@
+// class Deferred {
+//   constructor() {
+//     this.chain = [];
+//     this.value = undefined;
+//   }
+
+//   then(callback) {
+//     this.chain.push(callback);
+//     return this; // Allow chaining
+//   }
+
+//   resolve(value) {
+//     this.value = value; // Store initial value
+//     this.chain.forEach(this.executeCallback, this);
+//   }
+
+//   executeCallback(callback) {
+//     this.value = callback(this.value); // Update value with each callback result
+//   }
+// }
+
 class Deferred {
   constructor() {
     this.chain = [];
-    this.value = undefined;
   }
 
   then(callback) {
@@ -10,12 +30,10 @@ class Deferred {
   }
 
   resolve(value) {
-    this.value = value; // Store initial value
-    this.chain.forEach(this.executeCallback, this);
-  }
-
-  executeCallback(callback) {
-    this.value = callback(this.value); // Update value with each callback result
+    let currentValue = value; // Initialize with the input value
+    this.chain.forEach(function (callback) {
+      currentValue = callback(currentValue); // Update value through the chain
+    });
   }
 }
 
